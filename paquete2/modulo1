@@ -1,0 +1,83 @@
+ruta = "/drive/MyDrive/PrimeraPreEntrega"
+miBase = open(ruta + "/base.json", "r")
+baseUsuarios = {}
+
+# Crea usuario y lo guarda tanto en memoria como en el json.
+
+def crearUsuario():
+
+  usuario = input("Por favor ingrese su Nombre de usuario: ").upper()
+
+  while usuario in baseUsuarios:
+    print("Nombre de usuario ya creado, por favor cree uno diferente")
+    usuario = input("Por favor ingrese su Nombre de usuario: ").upper()
+
+  contrasenia = input("Por favor ingrese una contraseña: ")
+  baseUsuarios[usuario] = contrasenia
+  actualizarDB()
+  print(f"Usuario {usuario} creado con exito!")
+
+# Lista los usuarios de Base Usuarios en Memoria
+
+def listarUsuarios():
+  print("----------")
+  print("Lista de usuarios registrados")
+  print("----------")
+  for nombre in baseUsuarios:
+    print("Nombre:" ,nombre)
+    print("Contraseña:" ,baseUsuarios[nombre])
+
+#Valida que el usuario exista y que la contraseña coincida
+
+def iniciarSesion():
+  nombreUsuario = input("Por favor ingrese su Nombre de usuario").upper()
+
+  import json
+  miBase = ruta + "/base.json"
+  with open(miBase,'r') as file:
+    data = json.load(file)
+
+  while nombreUsuario in data:
+    contraseniaUsuario = input("Por favor ingrese su contraseña")
+    contraseniaBD = data.get(nombreUsuario)
+    if contraseniaUsuario  == contraseniaBD:
+      print("Ingreso Exitoso")
+      break
+    else:
+      print("Contraseña Incorrecta, por favor verifique")
+  else:
+      print("El nombre de usuario no existe en la base de datos")
+
+
+#Actualiza la base de json con la baseUsuarios
+
+def actualizarDB():
+    import json
+
+    base = baseUsuarios
+    miBase = open(ruta + "/base.json", "w")
+    json.dump(base, miBase, indent=2)
+    print("Base actualizada con Exito!")
+    miBase.close()
+
+def listarBase():
+  miBase = open(ruta + "/base.json", "r")
+  data = miBase.read()
+
+  print("Lista de usuarios registrados y sus contraseñas\n")
+
+  print(data)
+
+  miBase.close()
+
+def inicioPrograma ():
+  print("Bienvenidos al registro de usuarios\n")
+  print("Elija alguna de las opciones siguientes (1, 2, 3): \n 1 - Crear Usuario \n 2 - Listar Usuarios \n 3 - Iniciar Sesion")
+  opcion = (input(""))
+
+  if opcion == "1":
+    crearUsuario()
+  elif opcion == "2":
+    listarBase()
+  elif opcion == "3":
+    iniciarSesion()
